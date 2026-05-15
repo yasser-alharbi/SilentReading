@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-E2T-PTR Decoding Script — Teacher-Forcing EEG-to-Text Evaluation
+CT-E2T Decoding Script — Teacher-Forcing EEG-to-Text Evaluation
 Loads the best fine-tuned checkpoint and evaluates text prediction from EEG signals.
 """
 import os
