@@ -13,7 +13,6 @@ from transformers import BertLMHeadModel, BartTokenizer, BartForConditionalGener
     BartForSequenceClassification, BertTokenizer, BertConfig, \
     T5Tokenizer, T5Model, T5ForConditionalGeneration, T5Config
 from dataset import EEG_dataset_add_sentence_mae as EEG_dataset
-# from model_mae import CETMAE_project_late
 from model_srcp import SRCPModel
 from optim_new import *
 from contrastive_eeg_pretraining.pre_encoder import SRCPContrastiveModel
@@ -199,8 +198,8 @@ def train_mae(train_dataloader, valid_dataloader, model, optimizer, scheduler,to
             saved_name = os.path.join(checkpoint_path,checkpoint_name)
             torch.save(model.state_dict(), saved_name)
 
-            print("save the best cet-mae checkpoint")
-            logger.info("save the best cet-mae checkpoint")
+            print("save the best SRCP checkpoint")
+            logger.info("save the best SRCP checkpoint")
 
             # encoder_saved_name = os.path.join(checkpoint_path, checkpoint_eeg_encoder)
             # desired_state_dict = {key: value for key, value in model.state_dict().items() if key in desired_weights}
@@ -367,10 +366,10 @@ if __name__ == '__main__':
     model.to(device)
 
     # parameters = [p for p in model.parameters() if p.requires_grad]
-    optimizer = build_optimizer(args, model, mode="cet-mae")
+    optimizer = build_optimizer(args, model, mode="srcp")
 
     early_stopping = EarlyStopper(patience=4, min_delta=0.005)
-    # optimizer = torch.optim.AdamW(parameters, args["cet_mae_lr"], weight_decay=5e-7, betas=(0.95, 0.999))
+    # optimizer = torch.optim.AdamW(parameters, args["srcp_lr"], weight_decay=5e-7, betas=(0.95, 0.999))
     scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=10)
     # use adapt learning rate scheduler, for preliminary experiments only, should not use for formal experiments
     # if args["lr_adapt"] == True:
@@ -395,18 +394,18 @@ if __name__ == '__main__':
     all_valid_c_losses = []
     all_valid_sim_losses = []
 
-    logger.info(args['cet_mae_lr'])
+    logger.info(args['srcp_lr'])
 
     print("save_path: ", args["save_path"])
-    print("cet_mae_checkpoint_name: ", args["cet_mae_checkpoint_name"])
-    logger.info(args["cet_mae_checkpoint_name"])
+    print("srcp_checkpoint_name: ", args["srcp_checkpoint_name"])
+    logger.info(args["srcp_checkpoint_name"])
     # print("checkpoint_eeg_encoder: ", args['checkpoint_eeg_encoder'])
     # logger.info(args['checkpoint_eeg_encoder'])
 
     train_mae(train_dataloader, test_dataloader, model, optimizer, scheduler,tokenizer,early_stopping,
               num_epochs=num_epoch_mae,
               checkpoint_path=args["save_path"],
-              checkpoint_name = args["cet_mae_checkpoint_name"])
+              checkpoint_name = args["srcp_checkpoint_name"])
 
     folder_name = args['folder_name']
     directory = f'./loss_plot/{folder_name}'
@@ -415,8 +414,8 @@ if __name__ == '__main__':
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    plot_loss_trend(all_train_losses, all_valid_losses, f'{directory}/cet_mae_pretrain_total_loss_project_late.png','CET-MAE Total Loss')
-    plot_loss_trend(all_train_mae_losses, all_valid_mae_losses, f'{directory}/cet_mae_pretrain_mae_loss_project_late.png','CET-MAE EEG-MAE Loss')
-    plot_loss_trend(all_train_mlm_losses, all_valid_mlm_losses, f'{directory}/cet_mae_pretrain_mlm_loss_project_late.png','CET-MAE Text-MLM Loss')
-    plot_loss_trend(all_train_c_losses, all_valid_c_losses, f'{directory}/cet_mae_pretrain_contrastive_loss_project_late.png','CET-MAE EEG-Text Contrastive Loss')
-    plot_loss_trend(all_train_sim_losses, all_valid_sim_losses,f'{directory}/cet_mae_pretrain_similarity_loss_project_late.png','CET-MAE EEG Similarity Loss')
+    plot_loss_trend(all_train_losses, all_valid_losses, f'{directory}/cet_mae_pretrain_total_loss_project_late.png','SRCP Total Loss')
+    plot_loss_trend(all_train_mae_losses, all_valid_mae_losses, f'{directory}/cet_mae_pretrain_mae_loss_project_late.png','SRCP EEG-MAE Loss')
+    plot_loss_trend(all_train_mlm_losses, all_valid_mlm_losses, f'{directory}/cet_mae_pretrain_mlm_loss_project_late.png','SRCP Text-MLM Loss')
+    plot_loss_trend(all_train_c_losses, all_valid_c_losses, f'{directory}/cet_mae_pretrain_contrastive_loss_project_late.png','SRCP EEG-Text Contrastive Loss')
+    plot_loss_trend(all_train_sim_losses, all_valid_sim_losses,f'{directory}/cet_mae_pretrain_similarity_loss_project_late.png','SRCP EEG Similarity Loss')
