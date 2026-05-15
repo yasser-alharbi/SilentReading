@@ -19,15 +19,14 @@ pip install -r requirements.txt
 
 ## 📊 Data Preparation
 
-We use the [ZuCo (Zurich Cognitive Language Processing Corpus)](https://osf.io/q3zws/files/) benchmark dataset. 
+We use the [ZuCo (Zurich Cognitive Language Processing Corpus)](https://osf.io/q3zws/files/) benchmark dataset, evaluating on all **5 tasks**. 
 
 1. Download the `Matlab files` for `task1-SR`, `task2-NR`, and `task3-TSR` from ZuCo v1.0. Place them in the respective directories under `./zuco_dataset/`.
-2. Download ZuCo v2.0 `Matlab files` for `task1-NR` and place them under `./zuco_dataset/task2-NR-2.0/Matlab_files`.
+2. Download ZuCo v2.0 `Matlab files` for `task1-NR` and `task2-TSR` and place them under `./zuco_dataset/task2-NR-2.0/Matlab_files` and `./zuco_dataset/task3-TSR-2.0/Matlab_files` respectively.
 
-Preprocess the data using the scripts in `data_factory/`:
+Preprocess the data for all 5 tasks using the unified script in `data_factory/`:
 ```bash
-python data_factory/data2pickle_v1.py
-python data_factory/data2pickle_v2.py
+python data_factory/prepare_dataset_5tasks.py
 ```
 
 ## 🧠 Training & Evaluation
