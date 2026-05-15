@@ -1,6 +1,7 @@
 # <img width="80" height="80" alt="image" src="https://github.com/user-attachments/assets/0b4e2340-a61f-4030-ab2e-fd8a374ba8dd" />  |  SilentReading 
 
 
+
 An EEG-to-text translation pipeline to help mute individuals communicate by translating brain signals into readable text.
 
 This repository contains the official implementation of the **SilentReading** project, which uses a two-stage approach for high-fidelity brain-to-text decoding:
@@ -63,6 +64,32 @@ python evaluate_metrics.py
 python evaluate_with_postprocess.py
 ```
 
+## 📈 Results
+
+SilentReading significantly outperforms direct EEG-to-Text fine-tuning architectures. By utilizing **SRCP** (Contrastive Pretraining) and the **Chain-Thaw** fine-tuning methodology, our final model successfully preserves semantic accuracy across noisy brainwaves.
+
+| Metric | Baseline (Frozen BART) | Final CT-E2T Model | Absolute Improvement |
+|---|---|---|---|
+| **BLEU-1** | 25.87% | **48.88%** | + 23.01% |
+| **BLEU-4** | 2.06% | **35.54%** | + 33.48% |
+| **ROUGE-1 (F1)** | 31.03% | **50.53%** | + 19.50% |
+| **BERTScore (F1)** | 82.99% | **88.79%** | + 5.80% |
+
+*(Evaluated on 2,404 unseen test samples across 5 ZuCo tasks using teacher-forcing).*
+
+### Text Enhancement Module
+Our 2-stage Text Enhancement pipeline (deterministic rule-based cleaning + GPT-5.4-mini grammatical refinement) further polishes the raw CT-E2T predictions to ensure grammatical fluency:
+* **Raw BLEU-4:** 35.54% ➔ **LLM-Enhanced:** 36.64%
+* **Raw ROUGE-1 (F1):** 50.53% ➔ **LLM-Enhanced:** 52.76%
+* **Raw BERTScore (F1):** 88.79% ➔ **LLM-Enhanced:** 90.52%
+
+## 📝 Sample Predictions
+
+| Ground Truth (Original Text) | Raw CT-E2T Output | LLM-Enhanced Output |
+|---|---|---|
+| *The book was awarded the 1957 Pulitzer Prize for Biography.* | film is awarded the 1957 Pulitzer Prize for Biography.,,,,,,,,,, | The film is awarded the 1957 Pulitzer Prize for Biography. |
+| *He attended secondary school (Volksschule), and learned the trade of a joiner.* | was Florida school andVolksschule), and learned the trade of a joiner.rer....gigi | was Florida school and Volksschule, and learned the trade of a joiner. |
+
 ## 📂 Repository Structure
 
 - `config/`: YAML configuration files for all training, decoding, and evaluation tasks.
@@ -71,5 +98,13 @@ python evaluate_with_postprocess.py
 - `model_srcp.py` / `model_ct_e2t.py`: Core PyTorch architectures for the respective project phases.
 - `train_*.py` / `decode_*.py`: Executable scripts for running the models.
 
+## 🙏 Acknowledgements & Special Thanks
+
+This project was built upon incredible foundational research in the brain-computer interface and NLP domains. We extend our deepest gratitude to the authors of:
+* **[Wang et al., 2024]** for their pioneering work on the *Contrastive EEG-Text Masked Autoencoder (CET-MAE)* and *E2T-PTR*, which heavily inspired the core SRCP methodology and data processing pipeline of this project.
+* **[Felbo et al., 2017]** for their *DeepMoji* paper, which introduced the powerful Chain-Thaw transfer learning strategy that enabled our CT-E2T phase.
+* The creators of the **[ZuCo Corpus]**, for providing the high-quality, open-source EEG and eye-tracking dataset that made this research possible.
+
 ## ⚖️ License
 This project is released for academic and research purposes.
+
