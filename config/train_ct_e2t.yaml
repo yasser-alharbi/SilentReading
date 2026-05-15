@@ -1,0 +1,62 @@
+# ============================================================
+# E2T-PTR Fine-tuning Config — 5 Tasks (Decoding)
+# SR v1.0 + NR v1.0 + TSR v1.0 + NR v2.0 + TSR v2.0
+# Paper: ACL 2024 Table 9 — Fine-tuning hyperparameters
+# ============================================================
+
+# ---------- Logging ----------
+log_dir: ./logs/logging/silentreading/5_tasks
+state: INFO
+
+# ---------- Hardware ----------
+cuda: "cuda:0"
+
+# ---------- Paths ----------
+dataset_path: "./zuco_dataset/"
+save_path: "./checkpoints/CT-E2T"
+pretrained_model: "./models/huggingface/bart-large"
+
+# SRCP checkpoint to load encoder from
+srcp_checkpoint: "./checkpoints/SRCP/srcp_model_5_tasks_mask_75_75_611_text_frozen_011001loss_weight_gelu_bart_frozen.pt"
+
+# ---------- Checkpoint Names ----------
+ct_e2t_checkpoint_name: ct_e2t_5_tasks_bart_large.pt
+folder_name: ct_e2t_5_tasks
+
+# ---------- Model ----------
+model_name: CT-E2T
+eeg_bands: [ '_t1', '_t2', '_a1', '_a2', '_b1', '_b2', '_g1', '_g2' ]
+task_name: task1_task2_task3_NRv2_TSRv2
+eeg_dim: 840
+
+# Transfer these from SRCP (must match pre-training)
+eeg_encoder_layers: 6
+eeg_encoder_heads: 8
+eeg_encoder_dim_feedforward: 2048
+
+# ---------- Training ----------
+# NOTE: Chain-thaw training is in train_e2t_ptr.py
+#   5 phases, patience=2 per phase, max 10 epochs per phase
+#   Starts from SRCP pretrained EEG encoder weights
+# The values below are kept for reference but not used by the training script.
+num_epoch_fintune: 50
+batch_size: 16
+lr_finetune: 2e-7
+
+# ---------- Optimizer ----------
+finetune_optimizer: adamw
+weight_decay: 1e-2
+adam_beta1: 0.9
+adam_beta2: 0.999
+
+# ---------- Scheduler ----------
+lr_scheduler: cosine
+t_max: 50
+
+# ---------- Generation Parameters ----------
+num_beams: 5
+max_length: 60
+min_length: 1
+
+# ---------- Data ----------
+num_workers: 0

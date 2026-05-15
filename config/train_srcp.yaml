@@ -1,0 +1,72 @@
+# ============================================================
+# CET-MAE Pre-Training Config — 5 Tasks
+# SR v1.0 + NR v1.0 + TSR v1.0 + NR v2.0 + TSR v2.0
+# Paper: ACL 2024 — Contrastive EEG-Text Masked Autoencoder
+# ============================================================
+
+# ---------- Logging ----------
+log_dir: ./logs/logging/srcp-pretrain/5_tasks
+state: INFO
+
+# ---------- Hardware ----------
+cuda: "cuda:0"
+
+# ---------- Paths ----------
+dataset_path: "./zuco_dataset/"
+save_path: "./checkpoints/SRCP"
+pretrained_model: "./models/huggingface/bart-large"
+
+# ---------- Checkpoint Names ----------
+srcp_checkpoint_name: srcp_model_5_tasks_mask_75_75_611_text_frozen_011001loss_weight_gelu_bart_frozen.pt
+folder_name: srcp_model_5_tasks_mask_75_75_611_text_frozen_011001loss_weight_gelu_bart_frozen
+
+# ---------- Model ----------
+model_name: SRCP
+eeg_bands: [ '_t1', '_t2', '_a1', '_a2', '_b1', '_b2', '_g1', '_g2' ]
+eeg_dim: 840
+embed_dim: 840
+
+# EEG encoder — paper: 6 layers, 2048 FFN, 8 heads
+eeg_encoder_layers: 6
+eeg_encoder_heads: 8
+eeg_encoder_dim_feedforward: 2048
+eeg_encoder_dropout: 0.1
+
+# Multi-stream (unify) encoder — paper: 1 layer, 4096 FFN, 16 heads
+unify_encoder_layers: 1
+unify_encoder_heads: 16
+unify_encoder_dim_feedforward: 4096
+
+# EEG decoder — paper: lightweight, 1 layer, 8 heads
+eeg_decoder_layers: 1
+eeg_decoder_heads: 8
+eeg_decoder_embed_dim: 512
+
+# ---------- Training ----------
+num_epoch_pretrain: 100
+batch_size: 16
+
+# ---------- Optimizer — paper Appendix B Table 9 ----------
+srcp_optimizer: adamw
+srcp_lr: 5e-7
+weight_decay: 1e-2
+adam_beta1: 0.9
+adam_beta2: 0.999
+
+# ---------- Scheduler — paper Appendix B Table 9 ----------
+lr_scheduler: cosine
+t_max: 20
+
+# ---------- Masking — paper Table 3 best result ----------
+eeg_mask_ratio: 0.75
+text_mask_ratio: 0.75
+
+# ---------- Loss Weights — paper Section 4.2 ----------
+mae_loss_weight: 1.0
+mlm_loss_weight: 0.1
+contrast_loss_weight: 0.01
+
+# ---------- Data ----------
+num_workers: 0
+max_len: 56
+text_max_len: 58

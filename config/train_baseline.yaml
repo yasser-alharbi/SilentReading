@@ -1,0 +1,58 @@
+# ============================================================
+# Baseline Training Config — Direct BART Fine-Tuning
+# Same dataset & architecture as Chain-Thaw, but:
+#   - No SRCP pretrained EEG encoder
+#   - No chain-thaw phases
+#   - Single LR, all params trainable from start
+# ============================================================
+
+# ---------- Logging ----------
+log_dir: ./logs/logging/silentreading/5_tasks
+state: INFO
+
+# ---------- Hardware ----------
+cuda: "cuda:0"
+
+# ---------- Paths ----------
+dataset_path: "./zuco_dataset/"
+save_path: "./checkpoints/CT-E2T"
+pretrained_model: "./models/huggingface/bart-large"
+
+# ---------- Checkpoint Names ----------
+ct_e2t_checkpoint_name: baseline_frozen_ct_e2t_5_tasks_bart_large.pt
+folder_name: baseline_frozen_5_tasks
+
+# ---------- Model ----------
+model_name: Baseline-CT-E2T
+eeg_bands: [ '_t1', '_t2', '_a1', '_a2', '_b1', '_b2', '_g1', '_g2' ]
+task_name: task1_task2_task3_NRv2_TSRv2
+eeg_dim: 840
+
+# Same architecture as main model
+eeg_encoder_layers: 6
+eeg_encoder_heads: 8
+eeg_encoder_dim_feedforward: 2048
+
+# ---------- Training ----------
+num_epoch_fintune: 30
+batch_size: 16
+lr_finetune: 1e-5
+patience: 5
+
+# ---------- Optimizer ----------
+finetune_optimizer: adamw
+weight_decay: 1e-2
+adam_beta1: 0.9
+adam_beta2: 0.999
+
+# ---------- Scheduler ----------
+lr_scheduler: cosine
+t_max: 30
+
+# ---------- Generation Parameters ----------
+num_beams: 5
+max_length: 60
+min_length: 1
+
+# ---------- Data ----------
+num_workers: 0
