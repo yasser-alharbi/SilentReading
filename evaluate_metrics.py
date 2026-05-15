@@ -19,14 +19,14 @@ from nltk.translate.bleu_score import corpus_bleu, SmoothingFunction
 from rouge_score import rouge_scorer
 from bert_score import score as bert_score
 
-from model_e2t_ptr import E2T_PTR
+from model_ct_e2t import CTE2TModel
 from dataset import EEG_dataset_add_sentence_mae as EEG_dataset
 from utils import read_configuration
 
 
 def load_model(args, device):
     """Initialize model and load fine-tuned checkpoint."""
-    model = E2T_PTR(
+    model = CTE2TModel(
         eeg_dim=args['eeg_dim'],
         multi_heads=args['eeg_encoder_heads'],
         feedforward_dim=args['eeg_encoder_dim_feedforward'],
@@ -34,7 +34,7 @@ def load_model(args, device):
         pretrained_bart_path=args['pretrained_model'],
         device=device
     )
-    checkpoint_path = args['e2t_ptr_checkpoint']
+    checkpoint_path = args['ct_e2t_checkpoint']
     print(f'[INFO] Loading checkpoint from {checkpoint_path}')
     state_dict = torch.load(checkpoint_path, map_location=device)
     model.load_state_dict(state_dict)
