@@ -3,17 +3,11 @@
 CT-E2T Chain-Thaw Fine-Tuning (Run 5)
 Adapted from DeepMoji paper (Felbo et al., 2017).
 
-Chain-thaw sequentially unfreezes one layer group at a time,
-training each to convergence before moving to the next.
-This prevents the immediate overfitting seen when unfreezing
-all 463M parameters at once (the Step 2 problem).
 
 Phase sequence:
-  1. Adapters        — fc_eeg, eeg_stream_encoder            (~5M)
-  2. EEG Encoder     — pos_embed_e, e_branch                 (~17M)
-  3. BART Enc + Emb  — bart.model.encoder, shared, positions (~210M)
-  4. BART Decoder    — bart.model.decoder                    (~190M)
-  5. All Layers      — full model, very low LR               (~463M)
+  1. Phase 1 — Adapters (fc_eeg, eeg_stream_encoder)            (~5M)
+  2. Phase 2 — BART Decoder + LM Head                    (~190M)
+  3. Phase 3 — All Layers (full model, very low LR)               (~463M)
 """
 
 import os
@@ -262,7 +256,7 @@ if __name__ == '__main__':
     valid_dataloader = DataLoader(valid_set, batch_size=args['batch_size'],
                                   shuffle=False, num_workers=0)
 
-    # Model — start from scratch with CET-MAE pretrained EEG encoder
+    # Model — start from scratch with SRCP pretrained EEG encoder
     model = CTE2TModel(
         eeg_dim=840,
         multi_heads=args['eeg_encoder_heads'],
@@ -272,12 +266,12 @@ if __name__ == '__main__':
         device=device
     )
 
-    # Load pretrained EEG encoder from CET-MAE (start from zero, no SecondBestModel)
-    model.load_pretrained_eeg_encoder(args['cet_mae_checkpoint'])
+    # Load pretrained EEG encoder from SRCP (start from zero, no SecondBestModel)
+    model.load_pretrained_eeg_encoder(args['srcp_checkpoint'])
 
     model.to(device)
     os.makedirs(args['save_path'], exist_ok=True)
-    logger.info('Chain-thaw fine-tuning started from CET-MAE pretrained encoder')
+    logger.info('Chain-thaw fine-tuning started from SRCP pretrained encoder')
 
     # ── Freeze all parameters to start ───────────────────────────────────
     for param in model.parameters():
