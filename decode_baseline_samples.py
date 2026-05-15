@@ -3,14 +3,14 @@
 Baseline Decoding — 5 Specific Samples
 =======================================
 Generates teacher-forcing predictions from the baseline checkpoint
-for the same 5 samples used in the E2T-PTR comparison.
+for the same 5 samples used in the CT-E2T comparison.
 """
 import os
 import re
 import torch
 from transformers import BartTokenizer
 from transformers.models.bart.modeling_bart import shift_tokens_right
-from model_e2t_ptr import E2T_PTR
+from model_ct_e2t import CTE2TModel
 from dataset import EEG_dataset_add_sentence_mae as EEG_dataset
 
 
@@ -50,8 +50,8 @@ def main():
     test_set = EEG_dataset(path=DATASET_PATH)
     print(f"[INFO] Test set size: {len(test_set)}")
 
-    # Build model (same architecture as E2T-PTR)
-    model = E2T_PTR(
+    # Build model (same architecture as CT-E2T)
+    model = CTE2TModel(
         eeg_dim=EEG_DIM,
         multi_heads=EEG_ENCODER_HEADS,
         feedforward_dim=EEG_ENCODER_DIM_FEEDFORWARD,
