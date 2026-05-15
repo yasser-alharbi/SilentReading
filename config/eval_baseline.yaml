@@ -1,0 +1,31 @@
+# ============================================================
+# Baseline Evaluation Config — Direct BART Fine-Tuning
+# Points to the baseline checkpoint for evaluation
+# ============================================================
+
+# ---------- Hardware ----------
+cuda: "cuda:0"
+
+# ---------- Paths ----------
+dataset_path: "./zuco_dataset/"
+pretrained_model: "./models/huggingface/bart-large"
+
+# Baseline checkpoint
+ct_e2t_checkpoint: "./checkpoints/CT-E2T/baseline_frozen_ct_e2t_5_tasks_bart_large.pt"
+
+# ---------- Output ----------
+output_file: "./results/baseline/baseline_frozen_decoding_results_5tasks.txt"
+
+# ---------- Model Architecture (same as main model) ----------
+eeg_dim: 840
+eeg_encoder_layers: 6
+eeg_encoder_heads: 8
+eeg_encoder_dim_feedforward: 2048
+
+# ---------- Generation Parameters ----------
+num_beams: 5
+max_length: 60
+min_length: 1
+
+# ---------- Evaluation ----------
+num_samples: 50
