@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-E2T-PTR Chain-Thaw Fine-Tuning (Run 5)
+CT-E2T Chain-Thaw Fine-Tuning (Run 5)
 Adapted from DeepMoji paper (Felbo et al., 2017).
 
 Chain-thaw sequentially unfreezes one layer group at a time,
@@ -25,7 +25,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import BartTokenizer
 from dataset import EEG_dataset_add_sentence_mae as EEG_dataset
-from model_e2t_ptr import E2T_PTR
+from model_ct_e2t import CTE2TModel
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
@@ -230,7 +230,7 @@ def train_one_phase(train_dataloader, valid_dataloader, model, optimizer,
 # Main
 # ============================================================
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='E2T-PTR Chain-Thaw Fine-Tuning')
+    parser = argparse.ArgumentParser(description='CT-E2T Chain-Thaw Fine-Tuning')
     parser.add_argument('-c', '--config', help='path to config file', required=True)
     args = vars(parser.parse_args())
     args = read_configuration(args['config'])
@@ -263,7 +263,7 @@ if __name__ == '__main__':
                                   shuffle=False, num_workers=0)
 
     # Model — start from scratch with CET-MAE pretrained EEG encoder
-    model = E2T_PTR(
+    model = CTE2TModel(
         eeg_dim=840,
         multi_heads=args['eeg_encoder_heads'],
         feedforward_dim=args['eeg_encoder_dim_feedforward'],
@@ -293,7 +293,7 @@ if __name__ == '__main__':
 
         # 1. Reload best checkpoint (critical — prevents carrying over bad weights)
         if phase_idx > 0:
-            best_ckpt = os.path.join(args['save_path'], args['e2t_ptr_checkpoint_name'])
+            best_ckpt = os.path.join(args['save_path'], args['ct_e2t_checkpoint_name'])
             model.load_state_dict(torch.load(best_ckpt, map_location=device))
             print(f'\n[INFO] Reloaded best checkpoint before {phase_name}')
             # Re-freeze everything after reload
@@ -324,7 +324,7 @@ if __name__ == '__main__':
             train_dataloader, valid_dataloader, model, optimizer, scheduler,
             tokenizer, phase_name,
             checkpoint_path=args['save_path'],
-            checkpoint_name=args['e2t_ptr_checkpoint_name'],
+            checkpoint_name=args['ct_e2t_checkpoint_name'],
             max_epochs=MAX_EPOCHS_PER_PHASE,
             patience=PATIENCE_PER_PHASE
         )
@@ -337,5 +337,5 @@ if __name__ == '__main__':
 
     print('\n[INFO] Chain-thaw training complete!')
     print(f'[INFO] Final checkpoint saved to: '
-          f'{os.path.join(args["save_path"], args["e2t_ptr_checkpoint_name"])}')
+          f'{os.path.join(args["save_path"], args["ct_e2t_checkpoint_name"])}')
     logger.info('Chain-thaw training complete')
