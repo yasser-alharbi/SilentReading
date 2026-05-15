@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-E2T-PTR Evaluation with Post-Processing Pipeline (Stage 1)
+CT-E2T Evaluation with Post-Processing Pipeline (Stage 1)
 ===========================================================
 Runs teacher-forcing on the full test set, applies rule-based post-processing,
 and computes BLEU / ROUGE / BERTScore on BOTH raw and cleaned predictions
 to measure the exact improvement from post-processing alone.
 
 Usage:
-    python evaluate_with_postprocess.py -c config/eval_e2t_ptr_3.yaml
+    python evaluate_with_postprocess.py -c config/eval_ct_e2t.yaml
 """
 import os
 import re
