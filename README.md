@@ -1,4 +1,5 @@
-# SilentReading
+# <img width="80" height="80" alt="image" src="https://github.com/user-attachments/assets/0b4e2340-a61f-4030-ab2e-fd8a374ba8dd" />  |  SilentReading 
+
 
 An EEG-to-text translation pipeline to help mute individuals communicate by translating brain signals into readable text.
 
