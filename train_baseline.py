@@ -1,19 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Baseline Training — Direct BART Fine-Tuning for EEG-to-Text
-============================================================
-This is the baseline model for Section 5.2 of the thesis.
-NO CET-MAE pretraining. NO chain-thaw.
-Just the same E2T_PTR architecture trained end-to-end from scratch.
-
-Same dataset, same architecture, same evaluation — the ONLY
-difference is:
-  1. EEG encoder weights are randomly initialized (no CET-MAE)
-  2. All parameters are trainable from the start (no chain-thaw)
-  3. Single AdamW optimizer with a single learning rate
-
-This establishes the floor performance that CET-MAE + chain-thaw
-must beat to justify their complexity.
 """
 
 import os
@@ -25,7 +12,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import BartTokenizer
 from dataset import EEG_dataset_add_sentence_mae as EEG_dataset
-from model_e2t_ptr import E2T_PTR
+from model_ct_e2t import CTE2TModel
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
@@ -152,7 +139,7 @@ if __name__ == '__main__':
                                   shuffle=False, num_workers=0)
 
     # ── Model — NO CET-MAE pretraining, fully random EEG encoder ──
-    model = E2T_PTR(
+    model = CTE2TModel(
         eeg_dim=840,
         multi_heads=args['eeg_encoder_heads'],
         feedforward_dim=args['eeg_encoder_dim_feedforward'],
@@ -174,7 +161,7 @@ if __name__ == '__main__':
     print(f'[INFO] Trainable parameters: {count_trainable(model):,} (BART frozen)')
 
     os.makedirs(args['save_path'], exist_ok=True)
-    checkpoint_path = os.path.join(args['save_path'], args['e2t_ptr_checkpoint_name'])
+    checkpoint_path = os.path.join(args['save_path'], args['ct_e2t_checkpoint_name'])
 
     # ── Optimizer — single LR, all parameters ──
     lr = float(args['lr_finetune'])
