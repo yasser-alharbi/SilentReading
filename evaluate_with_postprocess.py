@@ -22,7 +22,7 @@ from nltk.translate.bleu_score import corpus_bleu, SmoothingFunction
 from rouge_score import rouge_scorer
 from bert_score import score as bert_score
 
-from model_e2t_ptr import E2T_PTR
+from model_ct_e2t import CTE2TModel
 from dataset import EEG_dataset_add_sentence_mae as EEG_dataset
 from utils import read_configuration
 
@@ -110,7 +110,7 @@ def postprocess_text(text):
 
 def load_model(args, device):
     """Initialize model and load fine-tuned checkpoint."""
-    model = E2T_PTR(
+    model = CTE2TModel(
         eeg_dim=args['eeg_dim'],
         multi_heads=args['eeg_encoder_heads'],
         feedforward_dim=args['eeg_encoder_dim_feedforward'],
@@ -118,7 +118,7 @@ def load_model(args, device):
         pretrained_bart_path=args['pretrained_model'],
         device=device
     )
-    checkpoint_path = args['e2t_ptr_checkpoint']
+    checkpoint_path = args['ct_e2t_checkpoint']
     print(f'[INFO] Loading checkpoint from {checkpoint_path}')
     state_dict = torch.load(checkpoint_path, map_location=device)
     model.load_state_dict(state_dict)
@@ -227,7 +227,7 @@ def print_comparison_table(raw_metrics, pp_metrics, num_samples, output_path=Non
     lines = []
     lines.append('')
     lines.append('=' * 80)
-    lines.append('  E2T-PTR Post-Processing Impact Analysis')
+    lines.append('  CT-E2T Post-Processing Impact Analysis')
     lines.append('=' * 80)
     lines.append(f'  Test samples: {num_samples}')
     lines.append('-' * 80)
@@ -324,7 +324,7 @@ def save_sample_comparison(references, raw_preds, pp_preds, output_path, num_sho
 # ═══════════════════════════════════════════════════════════════
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='E2T-PTR Post-Processing Evaluation')
+    parser = argparse.ArgumentParser(description='CT-E2T Post-Processing Evaluation')
     parser.add_argument('-c', '--config', required=True, help='Path to eval config YAML')
     args = vars(parser.parse_args())
     args = read_configuration(args['config'])
