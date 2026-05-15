@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-E2T-PTR Full Test Set Metrics Evaluation
+CT-E2T Full Test Set Metrics Evaluation
 Computes BLEU-1/2/3/4, ROUGE-1 P/R/F1, and BERTScore P/R/F1
 on all test samples using teacher-forcing.
 
 Usage:
-    python evaluate_metrics.py -c config/eval_e2t_ptr_3.yaml
+    python evaluate_metrics.py -c config/eval_ct_e2t.yaml
 """
 import os
 import argparse
@@ -136,7 +136,7 @@ def print_results_table(bleu, rouge, bertscore, num_samples, output_path=None):
     """Print thesis-ready results table and optionally save to file."""
     lines = []
     lines.append('=' * 70)
-    lines.append('  E2T-PTR Evaluation Results (Teacher-Forcing)')
+    lines.append('  CT-E2T Evaluation Results (Teacher-Forcing)')
     lines.append('=' * 70)
     lines.append(f'  Test samples: {num_samples}')
     lines.append('-' * 70)
@@ -179,7 +179,7 @@ def print_results_table(bleu, rouge, bertscore, num_samples, output_path=None):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='E2T-PTR Metrics Evaluation')
+    parser = argparse.ArgumentParser(description='CT-E2T Metrics Evaluation')
     parser.add_argument('-c', '--config', required=True, help='Path to eval config YAML')
     args = vars(parser.parse_args())
     args = read_configuration(args['config'])
