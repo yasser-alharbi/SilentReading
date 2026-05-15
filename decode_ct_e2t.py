@@ -91,7 +91,7 @@ def save_tf_results(results, output_path):
     
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write('=' * 80 + '\n')
-        f.write('  E2T-PTR Teacher-Forcing Evaluation Results\n')
+        f.write('  CT-E2T Teacher-Forcing Evaluation Results\n')
         f.write('=' * 80 + '\n\n')
         f.write(f'Total samples: {len(results)}\n\n')
         
@@ -108,7 +108,7 @@ def save_tf_results(results, output_path):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='E2T-PTR EEG-to-Text Decoding')
+    parser = argparse.ArgumentParser(description='CT-E2T Decoding')
     parser.add_argument('-c', '--config', help='path to eval config file', required=True)
     cli_args = vars(parser.parse_args())
     
