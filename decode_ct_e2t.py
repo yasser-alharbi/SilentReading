@@ -10,7 +10,7 @@ import torch
 import numpy as np
 from transformers import BartTokenizer
 from transformers.models.bart.modeling_bart import shift_tokens_right
-from model_e2t_ptr import E2T_PTR
+from model_ct_e2t import CTE2TModel
 from dataset import EEG_dataset_add_sentence_mae as EEG_dataset
 
 
@@ -23,7 +23,7 @@ def clean_generated_text(text):
 
 def load_model(args, device):
     """Initialize model and load fine-tuned checkpoint."""
-    model = E2T_PTR(
+    model = CTE2TModel(
         eeg_dim=args['eeg_dim'],
         multi_heads=args['eeg_encoder_heads'],
         feedforward_dim=args['eeg_encoder_dim_feedforward'],
@@ -32,7 +32,7 @@ def load_model(args, device):
         device=device
     )
     
-    checkpoint_path = args['e2t_ptr_checkpoint']
+    checkpoint_path = args['ct_e2t_checkpoint']
     state_dict = torch.load(checkpoint_path, map_location=device)
     model.load_state_dict(state_dict)
     model.to(device)
@@ -108,7 +108,7 @@ def save_tf_results(results, output_path):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='CT-E2T Decoding')
+    parser = argparse.ArgumentParser(description='CT-E2T EEG-to-Text Decoding')
     parser.add_argument('-c', '--config', help='path to eval config file', required=True)
     cli_args = vars(parser.parse_args())
     
