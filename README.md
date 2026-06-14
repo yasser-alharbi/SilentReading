@@ -6,7 +6,13 @@ An EEG-to-text translation pipeline to help mute individuals communicate by tran
 
 This repository contains the official implementation of the **SilentReading** project, which uses a two-stage approach for high-fidelity brain-to-text decoding:
 1. **SRCP (SilentReading Contrastive Pretraining):** A contrastive EEG-text masked autoencoder to align EEG representations with textual semantics.
-2. **CT-E2T (Chain-Thaw EEG-to-Text):** A BART-based decoding model that iteratively unfreezes layers for optimal fine-tuning, translating the pre-trained EEG representations into fluent text.
+
+   <img width="864" height="576" alt="image" src="https://github.com/user-attachments/assets/74326de9-7ab0-42a4-998e-50b5800b9efb" />
+
+3. **CT-E2T (Chain-Thaw EEG-to-Text):** A BART-based decoding model that iteratively unfreezes layers for optimal fine-tuning, translating the pre-trained EEG representations into fluent text.
+
+   <img width="865" height="433" alt="image" src="https://github.com/user-attachments/assets/d704c325-cd5f-4388-9a93-f09cdb24b861" />
+
 
 ## 🚀 Environment Setup
 
