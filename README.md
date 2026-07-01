@@ -187,6 +187,14 @@ If you use this work, please cite:
   howpublished = {\url{https://silentreading.ahhh.sa/}}
 }
 ```
+## 👥 Team
+
+This project was built by:
+
+- **Yasser Alharbi**
+- **Abdulaziz Hafiz**
+- **Nawaf Alandijany**
+- **Eyad Alatifi**
 
 ---
 
